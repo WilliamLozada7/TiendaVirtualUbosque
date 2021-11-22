@@ -11,4 +11,6 @@ public interface UserPort {
 	public User findByUserLogonAndUserPassword(String logon, String password);
 	
 	public User updateUser(User user);
+	
+	public User findByUserToken(String token);
 }

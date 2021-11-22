@@ -1,6 +1,7 @@
 package com.ubosque.api.store.services;
 
 import java.io.FileReader;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,10 @@ import com.opencsv.CSVReader;
 import com.ubosque.api.store.domain.dto.GenericResponse;
 import com.ubosque.api.store.domain.dto.LoadProductsRequest;
 import com.ubosque.api.store.domain.entity.Products;
+import com.ubosque.api.store.domain.entity.User;
 import com.ubosque.api.store.port.in.LoadProductsUseCase;
 import com.ubosque.api.store.port.out.ProductsPort;
+import com.ubosque.api.store.port.out.UserPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,12 +24,13 @@ public class LoadProductsService implements LoadProductsUseCase{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoadProductsService.class);
 	private final ProductsPort productsPort;
+	private final UserPort userPort;
 	
 	public static final char SEPARADOR = ',';
 	public static final char COMILLAS = '"';
 	
 	@Override
-	public GenericResponse<String> loadProducts(LoadProductsRequest loadProdutsRequest) {
+	public GenericResponse<String> loadProducts(LoadProductsRequest loadProdutsRequest, String authorization) {
 		
 		LOGGER.info("** LoadProductsService-LoadProducts-Init **");
 		
@@ -38,6 +42,15 @@ public class LoadProductsService implements LoadProductsUseCase{
 			String extension = loadProdutsRequest.getUrlProducts().split("\\.")[1];
 			if(!extension.equals("csv")) {
 				throw new Exception("La extensión de archivo no es correcta");
+			}
+			
+			User user = userPort.findByUserToken(authorization);
+			if(user == null) {
+				throw new Exception("Token no valido.");
+			}
+			Date currentDate = new Date();
+			if(currentDate.after(user.getUserEffectiveDate())) {
+				throw new Exception(String.format("La sesión del usuario %s expiro.",user.getUserLogon()));
 			}
 			
 			String estado = productsPort.deleteProdcuts();

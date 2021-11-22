@@ -33,4 +33,9 @@ public class UserAdapter implements UserPort{
 	public User updateUser(User user) {
 		return userRepository.save(user);
 	}
+	
+	@Override
+	public User findByUserToken(String token) {
+		return userRepository.findByUserToken(token);
+	}
 }

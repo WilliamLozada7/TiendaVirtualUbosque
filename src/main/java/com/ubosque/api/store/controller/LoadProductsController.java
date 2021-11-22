@@ -34,7 +34,7 @@ public class LoadProductsController {
 			@Valid @RequestBody LoadProductsRequest loadProductsRequest){
 				
 		LOGGER.info("** LoadProductsController-LoadProducts-Init **");
-		return loadProductsUseCase.loadProducts(loadProductsRequest);
+		return loadProductsUseCase.loadProducts(loadProductsRequest, authorization);
 	}
 	
 }

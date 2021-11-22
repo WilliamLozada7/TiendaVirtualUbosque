@@ -5,6 +5,6 @@ import com.ubosque.api.store.domain.dto.LoadProductsRequest;
 
 public interface LoadProductsUseCase {
 	
-	GenericResponse<String> loadProducts(LoadProductsRequest loadProdutsRequest);
+	GenericResponse<String> loadProducts(LoadProductsRequest loadProdutsRequest, String authorization);
 
 }

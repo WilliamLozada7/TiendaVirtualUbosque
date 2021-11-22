@@ -111,7 +111,6 @@ public class UserService implements UserUseCase{
 			
 			userGenericResponse.setEstado(GenericResponse.ESTADO_EXITOSO);
 			userGenericResponse.setMensaje("Usuario loggeado con exito.");
-			userGenericResponse.setError("");
 			userGenericResponse.setData(UserLoginResponse.builder()
 					.estado(userLogin.getUserState())
 					.token(token)
