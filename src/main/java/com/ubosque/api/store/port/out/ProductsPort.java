@@ -6,5 +6,9 @@ public interface ProductsPort {
 	
 	public Products registerProduct(Products product);
 
-	public String deleteProdcuts();
+	public String deleteProducts();
+	
+	public Products updateProduct(Products product);
+	
+	public Products findProductsByProductCode(Long code);
 }

@@ -6,29 +6,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.ubosque.api.store.domain.dto.GenericResponse;
-import com.ubosque.api.store.domain.dto.UserLoginRequest;
-import com.ubosque.api.store.domain.dto.UserLoginResponse;
-import com.ubosque.api.store.domain.dto.UserRegisterRequest;
-import com.ubosque.api.store.domain.dto.UserUpdatePasswordRequest;
+import com.ubosque.api.store.domain.dto.request.UserLoginRequest;
+import com.ubosque.api.store.domain.dto.request.UserRegisterRequest;
+import com.ubosque.api.store.domain.dto.request.UserUpdatePasswordRequest;
+import com.ubosque.api.store.domain.dto.response.GenericResponse;
+import com.ubosque.api.store.domain.dto.response.UserLoginResponse;
 import com.ubosque.api.store.domain.entity.User;
 import com.ubosque.api.store.port.in.UserUseCase;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequestMapping("/api/store/users")
 @RequiredArgsConstructor
-public class LoginController {
+public class UserController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 	
 	private final UserUseCase userUseCase;
 	

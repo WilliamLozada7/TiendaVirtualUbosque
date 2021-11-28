@@ -25,5 +25,6 @@ public class User {
 	private Date userStartDate;
 	private Date userEffectiveDate;
 	private String userState;
+	private String userBranchOffice;
 	
 }

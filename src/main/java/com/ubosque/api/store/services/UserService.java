@@ -7,11 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.ubosque.api.store.domain.dto.GenericResponse;
-import com.ubosque.api.store.domain.dto.UserLoginRequest;
-import com.ubosque.api.store.domain.dto.UserLoginResponse;
-import com.ubosque.api.store.domain.dto.UserRegisterRequest;
-import com.ubosque.api.store.domain.dto.UserUpdatePasswordRequest;
+import com.ubosque.api.store.domain.dto.request.UserLoginRequest;
+import com.ubosque.api.store.domain.dto.request.UserRegisterRequest;
+import com.ubosque.api.store.domain.dto.request.UserUpdatePasswordRequest;
+import com.ubosque.api.store.domain.dto.response.GenericResponse;
+import com.ubosque.api.store.domain.dto.response.UserLoginResponse;
+import com.ubosque.api.store.domain.dto.response.ValidateSessionResponse;
 import com.ubosque.api.store.domain.entity.User;
 import com.ubosque.api.store.port.in.UserUseCase;
 import com.ubosque.api.store.port.out.UserPort;
@@ -59,18 +60,19 @@ public class UserService implements UserUseCase{
 					.userStartDate(fechaActual)
 					.userEffectiveDate(fechaSalida)
 					.userState(Parameters.ESTADO_ACTIVO)
+					.userBranchOffice(userRegisterRequest.getUserBranchOffice())
 					.build();
 			
 			User userRegister = userPort.registerUser(userNew);
 			
 			if(userRegister != null) {
-				userGenericResponse.setEstado(GenericResponse.ESTADO_EXITOSO);
-				userGenericResponse.setMensaje("Usuario registrado con exito.");
+				userGenericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+				userGenericResponse.setMessage("Usuario registrado con exito.");
 			}
 		}
 		catch(Exception e) {
-			userGenericResponse.setEstado(GenericResponse.ESTADO_NO_EXITOSO);
-			userGenericResponse.setMensaje("Usuario no registrado.");
+			userGenericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			userGenericResponse.setMessage("Usuario no registrado.");
 			userGenericResponse.setError(e.getMessage());
 		}
 		
@@ -109,17 +111,19 @@ public class UserService implements UserUseCase{
 			userLogin.setUserEffectiveDate(fechaSalida);
 			userPort.updateUser(userLogin);
 			
-			userGenericResponse.setEstado(GenericResponse.ESTADO_EXITOSO);
-			userGenericResponse.setMensaje("Usuario loggeado con exito.");
-			userGenericResponse.setData(UserLoginResponse.builder()
-					.estado(userLogin.getUserState())
+			userGenericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			userGenericResponse.setMessage("Usuario loggeado con exito.");
+			userGenericResponse.setResults(UserLoginResponse.builder()
+					.state(userLogin.getUserState())
 					.token(token)
+					.name(userLogin.getUserName())
+					.branchOffice(userLogin.getUserBranchOffice())
 					.build());
 			
 		}
 		catch(Exception e) {
-			userGenericResponse.setEstado(GenericResponse.ESTADO_NO_EXITOSO);
-			userGenericResponse.setMensaje("Hubo un problema al loggear el usuario, intente nuevamente.");
+			userGenericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			userGenericResponse.setMessage("Hubo un problema al loggear el usuario, intente nuevamente.");
 			userGenericResponse.setError(e.getMessage());
 		}
 		LOGGER.info("** UserService-Login-Finish **");
@@ -146,18 +150,44 @@ public class UserService implements UserUseCase{
 			userUpdate.setUserPassword(Parameters.getHash(userUpdatePasswordRequest.getNewPassword()));
 			userPort.updateUser(userUpdate);
 			
-			userGenericResponse.setEstado(GenericResponse.ESTADO_EXITOSO);
-			userGenericResponse.setMensaje("Usuario actualizado con exito.");
+			userGenericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			userGenericResponse.setMessage("Usuario actualizado con exito.");
 			userGenericResponse.setError("");
-			userGenericResponse.setData("Contraseña actualizada.");
+			userGenericResponse.setResults("Contraseña actualizada.");
 			
 		}
 		catch(Exception e) {
-			userGenericResponse.setEstado(GenericResponse.ESTADO_NO_EXITOSO);
-			userGenericResponse.setMensaje("Hubo un problema al actulizar la contraseña el usuario, intente nuevamente.");
+			userGenericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			userGenericResponse.setMessage("Hubo un problema al actulizar la contraseña el usuario, intente nuevamente.");
 			userGenericResponse.setError(e.getMessage());
 		}
 		LOGGER.info("** UserService-UpdatePassword-Finish **");
 		return userGenericResponse;
+	}
+	
+	@Override
+	public ValidateSessionResponse validateSession(String token) throws Exception{
+		
+		LOGGER.info("** UserService-ValidateSession-Init **");
+		ValidateSessionResponse validateSessionResponse = ValidateSessionResponse.builder().build();;
+		
+		try {
+			User user = userPort.findByUserToken(token);
+			if(user == null) {
+				throw new Exception("Token no valido.");
+			}
+			Date currentDate = new Date();
+			if(currentDate.after(user.getUserEffectiveDate())) {
+				throw new Exception(String.format("La sesión del usuario %s expiro.",user.getUserLogon()));
+			}
+			validateSessionResponse.setUser(user);
+			validateSessionResponse.setCurrentDate(currentDate);
+		} catch (Exception e) {
+			LOGGER.info(String.format("** Error validando el usuario [%s] **", e.getMessage()));
+			throw new Exception(String.format("Error validando la sesión del usuario [%s]", e.getMessage()));
+		}
+		
+		LOGGER.info("** UserService-ValidateSession-Finish **");
+		return validateSessionResponse;
 	}
 }

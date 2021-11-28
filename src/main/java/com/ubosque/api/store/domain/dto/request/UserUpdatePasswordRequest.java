@@ -1,4 +1,4 @@
-package com.ubosque.api.store.domain.dto;
+package com.ubosque.api.store.domain.dto.request;
 
 import javax.validation.constraints.NotNull;
 

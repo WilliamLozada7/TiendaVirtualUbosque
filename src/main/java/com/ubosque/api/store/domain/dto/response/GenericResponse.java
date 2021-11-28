@@ -1,4 +1,4 @@
-package com.ubosque.api.store.domain.dto;
+package com.ubosque.api.store.domain.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -17,16 +17,16 @@ public class GenericResponse<T> {
 	public static final String ESTADO_EXITOSO = "1";
 	public static final String ESTADO_NO_EXITOSO = "0";
 	
-	private String estado;
+	private String state;
 	
-	private String Mensaje;
+	private String message;
 	
-	private String Error;
+	private String error;
 	
-	private T data;
+	private T results;
 	
 	public GenericResponse () {
-		this.estado = ESTADO_NO_EXITOSO;
-		this.Mensaje = "Validación no exitosa!";
+		this.state = ESTADO_NO_EXITOSO;
+		this.message = "Validación no exitosa!";
 	}
 }

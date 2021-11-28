@@ -20,7 +20,7 @@ public class ProductsAdapter implements ProductsPort{
 	}
 
 	@Override
-	public String deleteProdcuts() {
+	public String deleteProducts() {
 		String estado = "";
 		try {
 			 productsRepository.deleteAll();
@@ -30,5 +30,15 @@ public class ProductsAdapter implements ProductsPort{
 			estado = e.getMessage();
 		}
 		return estado;
+	}
+	
+	@Override
+	public Products updateProduct(Products product) {
+		return productsRepository.save(product);
+	}
+	
+	@Override
+	public Products findProductsByProductCode(Long code) {
+		return productsRepository.findProductsByProductCode(code);
 	}
 }
