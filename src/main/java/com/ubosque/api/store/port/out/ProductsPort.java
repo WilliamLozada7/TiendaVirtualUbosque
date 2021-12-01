@@ -1,5 +1,7 @@
 package com.ubosque.api.store.port.out;
 
+import java.util.List;
+
 import com.ubosque.api.store.domain.entity.Products;
 
 public interface ProductsPort {
@@ -10,5 +12,11 @@ public interface ProductsPort {
 	
 	public Products updateProduct(Products product);
 	
-	public Products findProductsByProductCode(Long code);
+	public Products findProductsById(String id);
+	
+	public List<Products> findProductsByAll();
+	
+	public Products findProductByCode(Long code);
+	
+	public String deleteProduct(String id);
 }

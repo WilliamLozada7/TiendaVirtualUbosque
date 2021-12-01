@@ -1,6 +1,7 @@
 package com.ubosque.api.store.services;
 
 import java.io.FileReader;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +112,7 @@ public class ProductsService implements ProductsUseCase{
 	}
 	
 	@Override
-	public GenericResponse<String> updateProduct(Long code, ProductRequest productRequest, String authorization){
+	public GenericResponse<String> updateProduct(String id, ProductRequest productRequest, String authorization){
 		
 		LOGGER.info("** LoadProductsService-LoadProduct-Init **");
 		
@@ -121,7 +122,7 @@ public class ProductsService implements ProductsUseCase{
 			
 			userUseCase.validateSession(authorization);
 			
-			Products product = productsPort.findProductsByProductCode(code);
+			Products product = productsPort.findProductsById(id);
 			
 			if(productRequest.getProductCode() != null ) {
 				product.setProductCode(productRequest.getProductCode());
@@ -156,7 +157,7 @@ public class ProductsService implements ProductsUseCase{
 	}
 
 	@Override
-	public GenericResponse<Products> getProduct(Long code, String authorization){
+	public GenericResponse<Products> getProduct(String id, String authorization){
 		
 		LOGGER.info("** LoadProductsService-GetProduct-Init **");
 		
@@ -166,7 +167,69 @@ public class ProductsService implements ProductsUseCase{
 			
 			userUseCase.validateSession(authorization);
 			
-			Products product = productsPort.findProductsByProductCode(code);
+			Products product = productsPort.findProductsById(id);
+			
+			if(product == null) {
+				throw new Exception(String.format("No se encontro producto con el código: %s", id));
+			}
+			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			genericResponse.setMessage("Producto encontrado.");
+			genericResponse.setResults(product);
+			
+		} catch (Exception e) {
+			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			genericResponse.setMessage("Error buscando el producto.");
+			genericResponse.setError(e.getMessage());
+		}
+		
+		LOGGER.info("** LoadProductsService-GetProduct-Finish **");
+		return genericResponse;
+		
+	}
+	
+	@Override
+	public GenericResponse<List<Products>> getProduct(String authorization){
+		
+		LOGGER.info("** LoadProductsService-GetProduct-Init **");
+		
+		GenericResponse<List<Products>> genericResponse = new GenericResponse<>();
+		
+		try {
+			
+			userUseCase.validateSession(authorization);
+			
+			List<Products> product = productsPort.findProductsByAll();
+			
+			if(product == null) {
+				throw new Exception("No se puedieron cargar los productos.");
+			}
+			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			genericResponse.setMessage("Productos encontrados.");
+			genericResponse.setResults(product);
+			
+		} catch (Exception e) {
+			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			genericResponse.setMessage("Error buscando los productos.");
+			genericResponse.setError(e.getMessage());
+		}
+		
+		LOGGER.info("** LoadProductsService-GetProduct-Finish **");
+		return genericResponse;
+		
+	}
+	
+	@Override
+	public GenericResponse<Products> getProduct(Long code, String authorization){
+		
+		LOGGER.info("** LoadProductsService-GetProduct-Init **");
+		
+		GenericResponse<Products> genericResponse = new GenericResponse<>();
+		System.out.println(code);
+		try {
+			
+			userUseCase.validateSession(authorization);
+			
+			Products product = productsPort.findProductByCode(code);
 			
 			if(product == null) {
 				throw new Exception(String.format("No se encontro producto con el código: %s", code));
@@ -182,6 +245,30 @@ public class ProductsService implements ProductsUseCase{
 		}
 		
 		LOGGER.info("** LoadProductsService-GetProduct-Finish **");
+		return genericResponse;
+		
+	}
+	
+	@Override
+	public GenericResponse<String> deleteProduct(String id){
+		
+		LOGGER.info("** UserService-DeleteProduct-Init **");
+		GenericResponse<String> genericResponse = new GenericResponse<>();
+		
+		try {
+			String estado = productsPort.deleteProduct(id);
+			if(!estado.equals("OK")) {
+				throw new Exception("No se pudo eliminar el producto de la base de datos.");
+			}
+			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			genericResponse.setMessage("Producto elminado de forma exitosa.");
+			
+		} catch (Exception e) {
+			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			genericResponse.setMessage("Hubo un problema eliminando el producto, intente nuevamente.");
+			genericResponse.setError(e.getMessage());
+		}
+		LOGGER.info("** UserService-DeleteProduct-Finish **");
 		return genericResponse;
 		
 	}

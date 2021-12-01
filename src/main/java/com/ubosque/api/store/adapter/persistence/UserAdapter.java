@@ -38,4 +38,9 @@ public class UserAdapter implements UserPort{
 	public User findByUserToken(String token) {
 		return userRepository.findByUserToken(token);
 	}
+	
+	@Override
+	public User findByUserLogon(String logon) {
+		return userRepository.findByUserLogon(logon);
+	}
 }

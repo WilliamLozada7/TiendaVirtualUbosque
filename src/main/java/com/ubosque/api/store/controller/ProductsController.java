@@ -1,11 +1,14 @@
 package com.ubosque.api.store.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,14 +60,31 @@ public class ProductsController {
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping("/updateProduct/{code}")
+	@PutMapping("/updateProduct/{id}")
 	public GenericResponse<String> updateProduct(
-			@Valid @PathVariable Long code,
+			@Valid @PathVariable String id,
 			@Valid @RequestHeader ("authorization") String authorization, 
 			@Valid @RequestBody ProductRequest productRequest){
 		
-		LOGGER.info("** LoadProductsController-LoadProduct-Init **");
-		return productsUseCase.updateProduct(code, productRequest, authorization);
+		LOGGER.info("** LoadProductsController-UpdateProduct-Init **");
+		return productsUseCase.updateProduct(id, productRequest, authorization);
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/getProduct/{id}")
+	public GenericResponse<Products> getProduct(
+			@Valid @PathVariable String id,
+			@Valid @RequestHeader ("authorization") String authorization){
+		LOGGER.info("** LoadProductsController-LoadProductById-Init **");
+		return productsUseCase.getProduct(id, authorization);
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/getProduct")
+	public GenericResponse<List<Products>> getProduct(
+			@Valid @RequestHeader ("authorization") String authorization){
+		LOGGER.info("** LoadProductsController-GetProducts-Init **");
+		return productsUseCase.getProduct(authorization);
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
@@ -72,8 +92,17 @@ public class ProductsController {
 	public GenericResponse<Products> getProduct(
 			@Valid @PathVariable Long code,
 			@Valid @RequestHeader ("authorization") String authorization){
-		LOGGER.info("** LoadProductsController-LoadProduct-Init **");
+		LOGGER.info("** LoadProductsController-GetProductByCode-Init **");
 		return productsUseCase.getProduct(code, authorization);
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/deleteProduct/{id}")
+	public GenericResponse<String> deleteProduct(
+			@Valid @PathVariable String Id,
+			@Valid @RequestHeader ("authorization") String authorization){
+		LOGGER.info("** LoadProductsController-DeleteProduct-Init **");
+		return productsUseCase.deleteProduct(Id);
 	}
 	
 }

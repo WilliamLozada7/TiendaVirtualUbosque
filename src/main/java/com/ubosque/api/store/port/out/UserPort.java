@@ -13,4 +13,6 @@ public interface UserPort {
 	public User updateUser(User user);
 	
 	public User findByUserToken(String token);
+	
+	public User findByUserLogon(String logon);
 }

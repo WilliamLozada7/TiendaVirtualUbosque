@@ -40,6 +40,10 @@ public class UserService implements UserUseCase{
 				throw new Exception(String.format("El usuario con cédula %s ya se encuentra registrado.", userRegisterRequest.getUserId()));
 			}
 			
+			if(userPort.findByUserLogon(userRegisterRequest.getUserLogon()) != null) {
+				throw new Exception(String.format("El username: %s ya se encuentra registrado", userRegisterRequest.getUserLogon()));
+			}
+			
 	    	Date fechaActual = new Date();
 	    	int vigencia = 30;
 			Calendar calendar = Calendar.getInstance();

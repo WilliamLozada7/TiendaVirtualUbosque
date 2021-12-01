@@ -7,5 +7,7 @@ import com.ubosque.api.store.domain.entity.Products;
 
 public interface ProductsRepository extends MongoRepository<Products, String>{
 	
-	public Products findProductsByProductCode(Long code);
+	public Products findProductsBy_id(String id);
+	
+	public Products findProductsByProductCode(Long code); //4
 }
