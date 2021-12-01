@@ -250,12 +250,15 @@ public class ProductsService implements ProductsUseCase{
 	}
 	
 	@Override
-	public GenericResponse<String> deleteProduct(String id){
+	public GenericResponse<String> deleteProduct(String id, String authorization){
 		
 		LOGGER.info("** UserService-DeleteProduct-Init **");
 		GenericResponse<String> genericResponse = new GenericResponse<>();
 		
 		try {
+			
+			userUseCase.validateSession(authorization);
+			
 			String estado = productsPort.deleteProduct(id);
 			if(!estado.equals("OK")) {
 				throw new Exception("No se pudo eliminar el producto de la base de datos.");

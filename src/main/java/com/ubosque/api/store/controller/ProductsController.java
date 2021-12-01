@@ -99,10 +99,10 @@ public class ProductsController {
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/deleteProduct/{id}")
 	public GenericResponse<String> deleteProduct(
-			@Valid @PathVariable String Id,
+			@Valid @PathVariable String id,
 			@Valid @RequestHeader ("authorization") String authorization){
 		LOGGER.info("** LoadProductsController-DeleteProduct-Init **");
-		return productsUseCase.deleteProduct(Id);
+		return productsUseCase.deleteProduct(id, authorization);
 	}
 	
 }

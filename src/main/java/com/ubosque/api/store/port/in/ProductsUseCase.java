@@ -22,5 +22,5 @@ public interface ProductsUseCase {
 	
 	public GenericResponse<Products> getProduct(Long code, String authorization);
 	
-	public GenericResponse<String> deleteProduct(String id);
+	public GenericResponse<String> deleteProduct(String id, String authorization);
 }
