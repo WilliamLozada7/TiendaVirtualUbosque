@@ -21,5 +21,7 @@ public interface UserUseCase {
 	public ValidateSessionResponse validateSession(String token) throws Exception;
 	
 	public GenericResponse<List<User>> getUsers(String authorization);
+	
+	public GenericResponse<User> getUser(String idCode, String authorization);
 }
 

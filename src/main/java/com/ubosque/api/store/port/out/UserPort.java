@@ -19,4 +19,5 @@ public interface UserPort {
 	public User findByUserLogon(String logon);
 	
 	public List<User> findUsers();
+	
 }

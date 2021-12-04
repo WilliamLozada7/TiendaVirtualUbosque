@@ -66,10 +66,11 @@ public class SaleService implements SaleUseCase {
 					.saleSalesValue(saleRequest.getSaleSalesValue())
 					.build();
 			
-			salePort.registerSale(sale);
+			Sale saleRegister = salePort.registerSale(sale);
 			
 			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
 			genericResponse.setMessage("Venta registrada exitosamente.");
+			genericResponse.setResults(saleRegister.get_id());
 			
 		} catch (Exception e) {
 			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);

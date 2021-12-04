@@ -232,7 +232,7 @@ public class UserService implements UserUseCase{
 			
 			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
 			genericResponse.setMessage("Clientes encontrados.");
-			genericResponse.setResults(userResponse	);
+			genericResponse.setResults(userResponse);
 			
 		} catch (Exception e) {
 			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
@@ -241,6 +241,38 @@ public class UserService implements UserUseCase{
 		}
 		
 		return genericResponse;
+	}
+	
+	@Override
+	public GenericResponse<User> getUser(String idCode, String authorization){
 		
+		LOGGER.info("** UserService-GetUsers-Init **");
+		GenericResponse<User> genericResponse = new GenericResponse<>();
+		
+		try {
+			validateSession(authorization);
+			
+			User userFind = userPort.findByUserId(idCode);
+			
+			if(userFind == null) {
+				throw new Exception("El usuario no existe.");
+			}
+			
+			User user = User.builder()
+					.userName(userFind.getUserName())
+					.userId(userFind.getUserId())
+					.build();
+			
+			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			genericResponse.setMessage("Cliente encontrado.");
+			genericResponse.setResults(user);
+			
+		} catch (Exception e) {
+			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			genericResponse.setMessage("Hubo un problema al obtener el clientes, intente nuevamente.");
+			genericResponse.setError(e.getMessage());
+		}
+		
+		return genericResponse;
 	}
 }
