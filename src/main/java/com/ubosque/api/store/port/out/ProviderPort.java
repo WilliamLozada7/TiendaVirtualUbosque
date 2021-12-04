@@ -1,5 +1,7 @@
 package com.ubosque.api.store.port.out;
 
+import java.util.List;
+
 import com.ubosque.api.store.domain.entity.Provider;
 
 public interface ProviderPort {
@@ -13,4 +15,6 @@ public interface ProviderPort {
 	public String deleteProviderById(String id);
 	
 	public Provider findProviderByProviderNit(String nit);
+	
+	public List<Provider> findProviders();
 }

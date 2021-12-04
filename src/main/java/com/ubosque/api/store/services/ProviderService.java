@@ -1,5 +1,7 @@
 package com.ubosque.api.store.services;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -40,6 +42,7 @@ public class ProviderService implements ProviderUseCase {
 					.providerNIT(providerRequest.getProviderNIT())
 					.providerEmail(providerRequest.getProviderEmail())
 					.providerCity(providerRequest.getProviderCity())
+					.providerPhone(providerRequest.getProviderPhone())
 					.build();
 			
 			providerPort.registerProvider(provider);
@@ -80,6 +83,9 @@ public class ProviderService implements ProviderUseCase {
 			if(providerRequest.getProviderCity() != null) {
 				provider.setProviderCity(providerRequest.getProviderCity());
 			}
+			if(providerRequest.getProviderPhone() != null) {
+				provider.setProviderPhone(providerRequest.getProviderPhone());
+			}
 			
 			providerPort.updateProvider(provider);
 			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
@@ -92,6 +98,35 @@ public class ProviderService implements ProviderUseCase {
 		}
 		
 		LOGGER.info("** ProviderService-UpdateProvider-Finish **");
+		return genericResponse;
+	}
+	
+	@Override
+	public GenericResponse<List<Provider>> getProviders(String authorization){
+		
+		LOGGER.info("** ProviderService-GetProviders-Init **");
+		
+		GenericResponse<List<Provider>> genericResponse = new GenericResponse<>();
+		
+		try {
+			userUseCase.validateSession(authorization);
+			
+			List<Provider> providers = providerPort.findProviders();
+			
+			if(providers == null) {
+				throw new Exception("No se encontraron proveedores en la base de datos.");
+			}
+			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			genericResponse.setMessage("Proveedores encontrados.");
+			genericResponse.setResults(providers);
+			
+		} catch (Exception e) {
+			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			genericResponse.setMessage("No se encontraron proveedores.");
+			genericResponse.setError(e.getMessage());
+		}
+		
+		LOGGER.info("** ProviderService-GetProvider-Finish **");
 		return genericResponse;
 	}
 	

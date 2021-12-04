@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.ubosque.api.store.adapter.repository.ProviderRepository;
 import com.ubosque.api.store.domain.entity.Provider;
+import java.util.List;
 import com.ubosque.api.store.port.out.ProviderPort;
 
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,10 @@ public class ProviderAdapter implements ProviderPort{
 	@Override
 	public Provider findProviderByProviderNit(String nit) {
 		return providerRepository.findProviderByProviderNIT(nit);
+	}
+	
+	@Override
+	public List<Provider> findProviders(){
+		return providerRepository.findAll();
 	}
 }

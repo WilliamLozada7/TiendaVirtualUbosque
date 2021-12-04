@@ -1,5 +1,7 @@
 package com.ubosque.api.store.port.in;
 
+import java.util.List;
+
 import com.ubosque.api.store.domain.dto.request.UserLoginRequest;
 import com.ubosque.api.store.domain.dto.request.UserRegisterRequest;
 import com.ubosque.api.store.domain.dto.request.UserUpdatePasswordRequest;
@@ -17,5 +19,7 @@ public interface UserUseCase {
 	public GenericResponse<String> updatePassword(UserUpdatePasswordRequest userUpdatePasswordRequest); 
 	
 	public ValidateSessionResponse validateSession(String token) throws Exception;
+	
+	public GenericResponse<List<User>> getUsers(String authorization);
 }
 

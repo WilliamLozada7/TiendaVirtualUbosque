@@ -1,5 +1,7 @@
 package com.ubosque.api.store.adapter.persistence;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.ubosque.api.store.adapter.repository.UserRepository;
@@ -42,5 +44,10 @@ public class UserAdapter implements UserPort{
 	@Override
 	public User findByUserLogon(String logon) {
 		return userRepository.findByUserLogon(logon);
+	}
+	
+	@Override
+	public List<User> findUsers(){
+		return userRepository.findAll();
 	}
 }

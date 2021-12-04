@@ -22,5 +22,5 @@ public class ProviderRequest {
 	private String providerEmail;
 	
 	@NotNull(message = "")
-	private String prividerPhone;
+	private String providerPhone;
 }

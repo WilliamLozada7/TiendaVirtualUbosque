@@ -88,7 +88,7 @@ public class ProductsController {
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/getProduct/{code}")
+	@GetMapping("/getProductByCode/{code}")
 	public GenericResponse<Products> getProduct(
 			@Valid @PathVariable Long code,
 			@Valid @RequestHeader ("authorization") String authorization){

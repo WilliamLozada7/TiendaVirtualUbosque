@@ -5,12 +5,15 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
 @Document(collection = "T01_USERS")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 	
 	@Id
@@ -26,5 +29,5 @@ public class User {
 	private Date userEffectiveDate;
 	private String userState;
 	private String userBranchOffice;
-	
+	private String userRole;
 }

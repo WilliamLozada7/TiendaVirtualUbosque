@@ -1,7 +1,9 @@
 package com.ubosque.api.store.services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,8 @@ public class UserService implements UserUseCase{
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 	
 	private final UserPort userPort;
+	
+	private final String USER_ROL = "USER";
 	
 	@Override
 	public GenericResponse<User> registerUser(UserRegisterRequest userRegisterRequest) {
@@ -65,6 +69,7 @@ public class UserService implements UserUseCase{
 					.userEffectiveDate(fechaSalida)
 					.userState(Parameters.ESTADO_ACTIVO)
 					.userBranchOffice(userRegisterRequest.getUserBranchOffice())
+					.userRole(USER_ROL)
 					.build();
 			
 			User userRegister = userPort.registerUser(userNew);
@@ -122,6 +127,7 @@ public class UserService implements UserUseCase{
 					.token(token)
 					.name(userLogin.getUserName())
 					.branchOffice(userLogin.getUserBranchOffice())
+					.rol(userLogin.getUserRole())
 					.build());
 			
 		}
@@ -193,5 +199,48 @@ public class UserService implements UserUseCase{
 		
 		LOGGER.info("** UserService-ValidateSession-Finish **");
 		return validateSessionResponse;
+	}
+	
+	@Override
+	public GenericResponse<List<User>> getUsers(String authorization){
+		
+		LOGGER.info("** UserService-GetUsers-Init **");
+		GenericResponse<List<User>> genericResponse = new GenericResponse<>();
+		
+		try {
+			validateSession(authorization);
+			
+			List<User> users = userPort.findUsers();
+			
+			if (users == null) {
+				throw new Exception("No se encontraron clientes.");
+			}
+			
+			List<User> userResponse = new ArrayList<User>();
+			for(User userFind: users) {
+				if(!userFind.getUserRole().equals("ADMIN")) {
+					User user = User.builder()
+							.userName(userFind.getUserName())
+							.userId(userFind.getUserId())
+							.userAddres(userFind.getUserAddres())
+							.userEmail(userFind.getUserEmail())
+							.userBranchOffice(userFind.getUserBranchOffice())
+							.build();
+					userResponse.add(user);
+				}
+			}
+			
+			genericResponse.setState(GenericResponse.ESTADO_EXITOSO);
+			genericResponse.setMessage("Clientes encontrados.");
+			genericResponse.setResults(userResponse	);
+			
+		} catch (Exception e) {
+			genericResponse.setState(GenericResponse.ESTADO_NO_EXITOSO);
+			genericResponse.setMessage("Hubo un problema al obtener los clientes, intente nuevamente.");
+			genericResponse.setError(e.getMessage());
+		}
+		
+		return genericResponse;
+		
 	}
 }

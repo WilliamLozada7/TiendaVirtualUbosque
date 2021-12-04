@@ -1,5 +1,7 @@
 package com.ubosque.api.store.port.out;
 
+import java.util.List;
+
 import com.ubosque.api.store.domain.entity.User;
 
 public interface UserPort {
@@ -15,4 +17,6 @@ public interface UserPort {
 	public User findByUserToken(String token);
 	
 	public User findByUserLogon(String logon);
+	
+	public List<User> findUsers();
 }

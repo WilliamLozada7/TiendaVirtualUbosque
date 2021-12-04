@@ -1,5 +1,7 @@
 package com.ubosque.api.store.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -53,6 +55,15 @@ public class ProviderController {
 				
 		LOGGER.info("** ProviderController-UpdateProvider-Init **");
 		return providerUseCase.updateProvider(id, providerRequest, authorization);
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/getProviders")
+	public GenericResponse<List<Provider>> getProviders (
+			@Valid @RequestHeader("authorization") String authorization){
+				
+		LOGGER.info("** ProviderController-GetProviders-Init **");
+		return providerUseCase.getProviders(authorization);
 	}
 	
 	@ResponseStatus(HttpStatus.OK)

@@ -17,6 +17,6 @@ public class Provider {
 	private String providerNIT;
 	private String providerCity;
 	private String providerEmail;
-	private String prividerPhone;
+	private String providerPhone;
 
 }

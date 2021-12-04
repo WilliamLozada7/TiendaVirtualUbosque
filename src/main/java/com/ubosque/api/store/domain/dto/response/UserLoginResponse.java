@@ -21,5 +21,8 @@ public class UserLoginResponse {
 	@NotNull(message = "La sucursal no puede ser null")
 	private String branchOffice;
 	
+	@NotNull(message = "El rol no puede ser null")
+	private String rol;
+	
 	
 }
